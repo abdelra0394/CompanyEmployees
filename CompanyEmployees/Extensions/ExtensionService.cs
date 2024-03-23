@@ -12,5 +12,12 @@ namespace CompanyEmployees.Extenstions
                     .AllowAnyMethod()
                     .AllowAnyHeader());
             });
+
+
+        public static void CongfigureIISIntegration(this IServiceCollection services) =>
+            services.Configure<IISOptions>(options =>
+            {
+
+            });
     }
 }

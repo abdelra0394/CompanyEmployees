@@ -10,6 +10,7 @@ namespace CompanyEmployees
 
             // Add services to the container.
             builder.Services.ConfigureCors();
+            builder.Services.CongfigureIISIntegration();
 
             builder.Services.AddControllers();
 
