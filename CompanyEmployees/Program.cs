@@ -1,4 +1,5 @@
 using CompanyEmployees.Extenstions;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace CompanyEmployees
 {
@@ -18,7 +19,18 @@ namespace CompanyEmployees
 
             // Configure the HTTP request pipeline.
 
+            if (app.Environment.IsDevelopment())
+                app.UseDeveloperExceptionPage();
+            else
+                app.UseHsts();
+
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.All
+            });
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
