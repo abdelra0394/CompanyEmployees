@@ -1,3 +1,5 @@
+using CompanyEmployees.Extenstions;
+
 namespace CompanyEmployees
 {
     public class Program
@@ -7,6 +9,7 @@ namespace CompanyEmployees
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.ConfigureCors();
 
             builder.Services.AddControllers();
 
