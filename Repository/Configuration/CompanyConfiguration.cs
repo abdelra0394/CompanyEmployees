@@ -27,15 +27,8 @@ namespace Repository.Configuration
                     Name = "Admin_Solutions Ltd",
                     Address = "312 Forest Avenue, BF 923",
                     Country = "USA"
-                },
-                new Employee
-                {
-                    Id = new Guid("021ca3c1-0deb-4afd-ae94-2159a8479811"),
-                    Name = "Kane Miller",
-                    Age = 35,
-                    Position = "Administrator",
-                    CompanyId = new Guid("3d490a70-94ce-4d15-9494-5248280c2ce3")
                 }
+               
             );
         }
     }

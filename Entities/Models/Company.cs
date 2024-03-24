@@ -21,6 +21,6 @@ namespace Entities.Models
         [MaxLength(60, ErrorMessage = "Maximum length for the Address is 60 characters.")]
         public string? Address { get; set; }
         public string?  Country { get; set; }
-        public ICollection<Employee>? Employees { get; set; }
+       public ICollection<Employee>? Employees { get; set; }
     }
 }
