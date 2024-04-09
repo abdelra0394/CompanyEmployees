@@ -14,5 +14,18 @@ namespace Repository
         {
             
         }
+
+        public IEnumerable<Employee> GetAllEmployees(Guid companyId, bool trackChanges)
+        {
+            return FindByCondition(e => e.CompanyId == companyId,trackChanges)
+                .OrderBy(e => e.Name)
+                .ToList();
+        }
+
+        public Employee GetEmployee(Guid companyId, Guid id, bool trackChanges)
+        {
+            return FindByCondition(e => e.Id == id && e.CompanyId == companyId,trackChanges)
+                .SingleOrDefault();
+        }
     }
 }
