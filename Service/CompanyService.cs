@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
+using Entities.Exceptions;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -41,7 +42,7 @@ namespace Service
 
             if (company == null)
             {
-
+                throw new CompanyNotFoundException(companyId);
             }
 
             CompanyDto companyDto = _mapper.Map<CompanyDto>(company);
