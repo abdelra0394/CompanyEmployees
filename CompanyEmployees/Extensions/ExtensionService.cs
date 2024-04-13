@@ -39,5 +39,13 @@ namespace CompanyEmployees.Extenstions
         public static void ConfigureSqlContext(this IServiceCollection services, IConfiguration configuration) =>
             services.AddDbContext<RepositoryContext>(options =>
                     options.UseSqlServer(configuration.GetConnectionString("sqlConnection")));
+
+        public static IMvcBuilder AddCsvFormatter(this IMvcBuilder builder)
+        {
+            return builder.AddMvcOptions(config =>
+            {
+                config.OutputFormatters.Add(new CsvOutputFormatter());
+            });
+        }
     }
 }
