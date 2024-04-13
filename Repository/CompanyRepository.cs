@@ -10,6 +10,11 @@ namespace Repository
 
         }
 
+        public void CreateCompany(Company company)
+        {
+            Create(company);
+        }
+
         public IEnumerable<Company> GetAllCompanies(bool trackChanges)
         {
             return FindAll(trackChanges)
