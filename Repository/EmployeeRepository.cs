@@ -21,6 +21,11 @@ namespace Repository
             Create(employee);
         }
 
+        public void DeleteEmployee(Employee employee)
+        {
+            Delete(employee);
+        }
+
         public IEnumerable<Employee> GetAllEmployees(Guid companyId, bool trackChanges)
         {
             return FindByCondition(e => e.CompanyId == companyId,trackChanges)
