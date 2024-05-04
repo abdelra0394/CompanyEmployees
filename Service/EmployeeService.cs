@@ -1,14 +1,9 @@
 ﻿using AutoMapper;
 using Contracts;
-using Entities.Exceptions;
+using Entities.Exceptions.NotFound;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service
 {
@@ -17,7 +12,7 @@ namespace Service
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
-        public EmployeeService(IRepositoryManager repositoryManager,ILoggerManager loggerManager,IMapper mapper)
+        public EmployeeService(IRepositoryManager repositoryManager, ILoggerManager loggerManager, IMapper mapper)
         {
             _logger = loggerManager;
             _repository = repositoryManager;
@@ -44,11 +39,11 @@ namespace Service
         public IEnumerable<EmployeeDto> GetAllEmployees(Guid companyId, bool trackChanges)
         {
             var company = _repository.Company.GetCompany(companyId, trackChanges);
-            if(company == null)
+            if (company == null)
                 throw new CompanyNotFoundException(companyId);
 
             var employeesInDB = _repository.Employee.GetAllEmployees(companyId, trackChanges);
-            
+
             var employees = _mapper.Map<IEnumerable<EmployeeDto>>(employeesInDB);
             return employees;
         }
@@ -56,11 +51,11 @@ namespace Service
         public EmployeeDto GetEmployee(Guid companyId, Guid id, bool trackChanges)
         {
             var company = _repository.Company.GetCompany(companyId, trackChanges);
-            if(company == null)
+            if (company == null)
                 throw new CompanyNotFoundException(companyId);
 
             var employeeInDB = _repository.Employee.GetEmployee(companyId, id, trackChanges);
-            if(employeeInDB == null)
+            if (employeeInDB == null)
                 throw new EmployeeNotFoundException(id);
 
             var employee = _mapper.Map<EmployeeDto>(employeeInDB);

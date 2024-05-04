@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Exceptions
+namespace Entities.Exceptions.NotFound
 {
     public abstract class NotFoundException : Exception
     {

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Contracts;
 using Entities.Exceptions;
+using Entities.Exceptions.BadRequest;
+using Entities.Exceptions.NotFound;
 using Entities.Models;
 using Service.Contracts;
 using Shared.DataTransferObjects;
@@ -35,6 +37,26 @@ namespace Service
             return copmanyDto;
         }
 
+        public (IEnumerable<CompanyDto> companies, string ids) CreateCompanyCollection(IEnumerable<CompanyForCreationDto> companies)
+        {
+            if(companies == null)
+            {
+                throw new CompanyCollectionBadRequest();
+            }
+
+            var companiesEntity = _mapper.Map<IEnumerable<Company>>(companies);
+            foreach (var company in companiesEntity)
+            {
+                _repository.Company.CreateCompany(company);
+            }
+            _repository.Save();
+
+            var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companiesEntity);
+            var ids = string.Join(",", companiesDto.Select(c => c.Id));
+
+            return (companies: companiesDto, ids: ids);
+        }
+
         public IEnumerable<CompanyDto> GetAllCompanies(bool trackChanges)
         {
            
@@ -43,6 +65,25 @@ namespace Service
             var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companies);
             return companiesDto;
             
+        }
+
+        public IEnumerable<CompanyDto> GetCompaniesCollection(IEnumerable<Guid> ids, bool trackChanges)
+        {
+            if(ids == null || ids.Count() == 0)
+            {
+                throw new IdsOfCollectionBadRequest();
+            }
+
+            var companiesEntity = _repository.Company.GetCompaniesCollection(ids, trackChanges);
+
+            if (companiesEntity.Count() != ids.Count())
+            {
+                throw new CollectionBadRequest();
+            }
+
+            var companiesDto = _mapper.Map<IEnumerable<CompanyDto>>(companiesEntity);
+
+            return companiesDto;
         }
 
         public CompanyDto GetCompany(Guid companyId, bool trackChanges)

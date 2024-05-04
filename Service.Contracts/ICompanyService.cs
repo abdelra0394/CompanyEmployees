@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,5 +16,9 @@ namespace Service.Contracts
         CompanyDto GetCompany(Guid companyId, bool trackChanges);
 
         CompanyDto CreateCompany(CompanyForCreationDto company);
+
+        IEnumerable<CompanyDto> GetCompaniesCollection(IEnumerable<Guid> ids, bool trackChanges);
+
+        (IEnumerable<CompanyDto>companies,string ids) CreateCompanyCollection(IEnumerable<CompanyForCreationDto> companies);
     }
 }
