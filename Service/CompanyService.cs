@@ -113,5 +113,18 @@ namespace Service
             CompanyDto companyDto = _mapper.Map<CompanyDto>(company);
             return companyDto;
         }
+
+        public void UpdateCompany(Guid companyId, CompanyForUpdateDto company, bool trackChanges)
+        {
+            var companyEntity = _repository.Company.GetCompany(companyId, trackChanges);
+            if (companyEntity == null)
+            {
+                throw new CompanyNotFoundException(companyId);
+            }
+
+            _mapper.Map(company, companyEntity);
+            _repository.Save();
+
+        }
     }
 }
