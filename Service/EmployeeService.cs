@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.ComponentModel.Design;
+using AutoMapper;
 using Contracts;
 using Entities.Exceptions.NotFound;
 using Entities.Models;
@@ -74,6 +75,27 @@ namespace Service
 
             var employee = _mapper.Map<EmployeeDto>(employeeInDB);
             return employee;
+        }
+
+        public (EmployeeForUpdateDto employeeForPatch, Employee employeeEntity) GetEmployeeForPatch(Guid companyId, Guid employeeId, bool companyTrackChanges, bool employeeTrackChanges)
+        {
+            var company = _repository.Company.GetCompany(companyId, companyTrackChanges);
+            if (company == null)
+                throw new CompanyNotFoundException(companyId);
+
+            var employeeInDB = _repository.Employee.GetEmployee(companyId, employeeId, employeeTrackChanges);
+            if (employeeInDB == null)
+                throw new EmployeeNotFoundException(employeeId);
+
+            var employeeForPatch = _mapper.Map<EmployeeForUpdateDto>(employeeInDB);
+
+            return (employeeForPatch, employeeInDB);
+        }
+
+        public void SaveEmployeePatch(EmployeeForUpdateDto employeeForPatch, Employee employeeEntity)
+        {
+            _mapper.Map(employeeForPatch, employeeEntity);
+            _repository.Save();
         }
 
         public void UpdateEmployee(Guid companyId, Guid employeeId, EmployeeForUpdateDto employee, bool companyTrackChanges, bool employeeTrackChanges)
