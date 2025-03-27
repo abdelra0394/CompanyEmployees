@@ -3,6 +3,8 @@ using CompanyEmployees.Extenstions;
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using Microsoft.Extensions.Options;
 using NLog;
 
 namespace CompanyEmployees
@@ -14,6 +16,13 @@ namespace CompanyEmployees
             var builder = WebApplication.CreateBuilder(args);
 
             LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+
+            NewtonsoftJsonInputFormatter GetJsonPatchInputFormatter() =>
+                new ServiceCollection().AddLogging().AddMvc().AddNewtonsoftJson()
+                .Services.BuildServiceProvider()
+                .GetRequiredService<IOptions<MvcOptions>>().Value.InputFormatters
+                .OfType<NewtonsoftJsonInputFormatter>().First();
+
             // Add services to the container.
             builder.Services.ConfigureCors();
             builder.Services.CongfigureIISIntegration();
@@ -30,6 +39,7 @@ namespace CompanyEmployees
                 {
                     config.RespectBrowserAcceptHeader = true;
                     config.ReturnHttpNotAcceptable = true;
+                    config.InputFormatters.Insert(0, GetJsonPatchInputFormatter());
                 }).AddXmlSerializerFormatters()
                 .AddCsvFormatter()
                 .AddApplicationPart(typeof(CompanyEmployees.Presentation.AssemblyReference).Assembly);
