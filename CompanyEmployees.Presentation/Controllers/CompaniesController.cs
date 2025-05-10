@@ -50,6 +50,11 @@ namespace CompanyEmployees.Presentation.Controllers
                 return BadRequest("company object is null");
             }
 
+            if (!ModelState.IsValid)
+            {
+                return UnprocessableEntity(ModelState);
+            }
+
             var companyDto = _serviceManager.CompanyService
                 .CreateCompany(company);
 
@@ -88,6 +93,11 @@ namespace CompanyEmployees.Presentation.Controllers
             if(company == null)
             {
                 return BadRequest("company dto object is null");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return UnprocessableEntity(ModelState);
             }
 
             _serviceManager.CompanyService.UpdateCompany(id, company, true);
