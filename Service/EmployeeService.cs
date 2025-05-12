@@ -20,9 +20,9 @@ namespace Service
             _mapper = mapper;
         }
 
-        public EmployeeDto CreateEmployee(Guid companyId, EmployeeForCreationDto employee, bool trackChanges)
+        public async Task<EmployeeDto> CreateEmployeeAsync(Guid companyId, EmployeeForCreationDto employee, bool trackChanges)
         {
-            var company = _repository.Company.GetCompany(companyId, trackChanges);
+            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges);
 
             if (company == null)
             {
@@ -31,45 +31,45 @@ namespace Service
 
             var employeeEntity = _mapper.Map<Employee>(employee);
             _repository.Employee.CreateEmployee(companyId, employeeEntity);
-            _repository.Save();
+            await _repository.SaveAsync(); 
 
             return _mapper.Map<EmployeeDto>(employeeEntity);
 
         }
 
-        public void DeleteEmployee(Guid companyId, Guid employeeId, bool trackChanges)
+        public async Task DeleteEmployeeAsync(Guid companyId, Guid employeeId, bool trackChanges)
         {
-            var company = _repository.Company.GetCompany(companyId, trackChanges);
+            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges);
             if (company == null)
                 throw new CompanyNotFoundException(companyId);
 
-            var employee = _repository.Employee.GetEmployee(companyId, employeeId, trackChanges);
+            var employee = await _repository.Employee.GetEmployeeAsync(companyId, employeeId, trackChanges);
             if (employee == null)
                 throw new EmployeeNotFoundException(employeeId);
 
             _repository.Employee.DeleteEmployee(employee);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public IEnumerable<EmployeeDto> GetAllEmployees(Guid companyId, bool trackChanges)
+        public async Task<IEnumerable<EmployeeDto>> GetAllEmployeesAsync(Guid companyId, bool trackChanges)
         {
-            var company = _repository.Company.GetCompany(companyId, trackChanges);
+            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges);
             if (company == null)
                 throw new CompanyNotFoundException(companyId);
 
-            var employeesInDB = _repository.Employee.GetAllEmployees(companyId, trackChanges);
+            var employeesInDB = await _repository.Employee.GetAllEmployeesAsync(companyId, trackChanges);
 
             var employees = _mapper.Map<IEnumerable<EmployeeDto>>(employeesInDB);
             return employees;
         }
 
-        public EmployeeDto GetEmployee(Guid companyId, Guid id, bool trackChanges)
+        public async Task<EmployeeDto> GetEmployeeAsync(Guid companyId, Guid id, bool trackChanges)
         {
-            var company = _repository.Company.GetCompany(companyId, trackChanges);
+            var company = await _repository.Company.GetCompanyAsync(companyId, trackChanges);
             if (company == null)
                 throw new CompanyNotFoundException(companyId);
 
-            var employeeInDB = _repository.Employee.GetEmployee(companyId, id, trackChanges);
+            var employeeInDB = await _repository.Employee.GetEmployeeAsync(companyId, id, trackChanges);
             if (employeeInDB == null)
                 throw new EmployeeNotFoundException(id);
 
@@ -77,13 +77,13 @@ namespace Service
             return employee;
         }
 
-        public (EmployeeForUpdateDto employeeForPatch, Employee employeeEntity) GetEmployeeForPatch(Guid companyId, Guid employeeId, bool companyTrackChanges, bool employeeTrackChanges)
+        public async Task<(EmployeeForUpdateDto employeeForPatch, Employee employeeEntity)> GetEmployeeForPatchAsync(Guid companyId, Guid employeeId, bool companyTrackChanges, bool employeeTrackChanges)
         {
-            var company = _repository.Company.GetCompany(companyId, companyTrackChanges);
+            var company = await _repository.Company.GetCompanyAsync(companyId, companyTrackChanges);
             if (company == null)
                 throw new CompanyNotFoundException(companyId);
 
-            var employeeInDB = _repository.Employee.GetEmployee(companyId, employeeId, employeeTrackChanges);
+            var employeeInDB = await _repository.Employee.GetEmployeeAsync(companyId, employeeId, employeeTrackChanges);
             if (employeeInDB == null)
                 throw new EmployeeNotFoundException(employeeId);
 
@@ -92,24 +92,24 @@ namespace Service
             return (employeeForPatch, employeeInDB);
         }
 
-        public void SaveEmployeePatch(EmployeeForUpdateDto employeeForPatch, Employee employeeEntity)
+        public async Task SaveEmployeePatchAsync(EmployeeForUpdateDto employeeForPatch, Employee employeeEntity)
         {
             _mapper.Map(employeeForPatch, employeeEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
 
-        public void UpdateEmployee(Guid companyId, Guid employeeId, EmployeeForUpdateDto employee, bool companyTrackChanges, bool employeeTrackChanges)
+        public async Task UpdateEmployeeAsync(Guid companyId, Guid employeeId, EmployeeForUpdateDto employee, bool companyTrackChanges, bool employeeTrackChanges)
         {
-            var companyEntity = _repository.Company.GetCompany(companyId, companyTrackChanges);
+            var companyEntity = await _repository.Company.GetCompanyAsync(companyId, companyTrackChanges);
             if (companyEntity == null)
                 throw new CompanyNotFoundException(companyId);
 
-            var employeeEntity = _repository.Employee.GetEmployee(companyId, employeeId, employeeTrackChanges);
+            var employeeEntity = await _repository.Employee.GetEmployeeAsync(companyId, employeeId, employeeTrackChanges);
             if (employeeEntity == null)
                 throw new EmployeeNotFoundException(employeeId);
 
             _mapper.Map(employee, employeeEntity);
-            _repository.Save();
+            await _repository.SaveAsync();
         }
     }
 }

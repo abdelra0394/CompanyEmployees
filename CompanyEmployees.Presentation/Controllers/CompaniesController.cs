@@ -22,28 +22,28 @@ namespace CompanyEmployees.Presentation.Controllers
 
 
         [HttpGet]
-        public IActionResult GetCompanies()
+        public async Task<IActionResult> GetCompanies()
         {
-            var companies = _serviceManager
+            var companies = await _serviceManager
                 .CompanyService
-                .GetAllCompanies(trackChanges: false);
+                .GetAllCompaniesAsync(trackChanges: false);
 
             return Ok(companies);
             
         }
 
         [HttpGet("{id:guid}",Name ="CompanyById")]
-        public IActionResult GetCompany(Guid id)
+        public async Task<IActionResult> GetCompany(Guid id)
         {
-            var company = _serviceManager
+            var company = await _serviceManager
                 .CompanyService
-                .GetCompany(id, trackChanges: false);
+                .GetCompanyAsync(id, trackChanges: false);
 
             return Ok(company);
         }
 
         [HttpPost]
-        public IActionResult CreateCompany([FromBody] CompanyForCreationDto company)
+        public async Task<IActionResult> CreateCompany([FromBody] CompanyForCreationDto company)
         {
             if(company == null)
             {
@@ -55,40 +55,40 @@ namespace CompanyEmployees.Presentation.Controllers
                 return UnprocessableEntity(ModelState);
             }
 
-            var companyDto = _serviceManager.CompanyService
-                .CreateCompany(company);
+            var companyDto = await _serviceManager.CompanyService
+                .CreateCompanyAsync(company);
 
             return CreatedAtRoute("CompanyById", new { id = companyDto.Id }, companyDto);
         }
 
         [HttpGet("collection/({ids})",Name ="CompaniesCollection")]
-        public IActionResult CompaniesCollection([ModelBinder(binderType:typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
+        public async Task<IActionResult> CompaniesCollection([ModelBinder(binderType:typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {
-            var companies = _serviceManager.CompanyService
-                .GetCompaniesCollection(ids, trackChanges: false);
+            var companies = await _serviceManager.CompanyService
+                .GetCompaniesCollectionAsync(ids, trackChanges: false);
 
             return Ok(companies);
         }
 
         [HttpPost("collection")]
-        public IActionResult CreateCompanyCollection([FromBody] IEnumerable<CompanyForCreationDto> companies)
+        public async Task<IActionResult> CreateCompanyCollection([FromBody] IEnumerable<CompanyForCreationDto> companies)
         {
 
-            var companiesDto = _serviceManager.CompanyService
-                .CreateCompanyCollection(companies);
+            var companiesDto = await _serviceManager.CompanyService
+                .CreateCompanyCollectionAsync(companies);
 
             return CreatedAtRoute("CompaniesCollection", new { ids = companiesDto.ids }, companiesDto.companies);
         }
 
         [HttpDelete("{id:guid}")]
-        public IActionResult DeleteCompany(Guid id)
+        public async Task<IActionResult> DeleteCompany(Guid id)
         {
-            _serviceManager.CompanyService.DeleteCompany(id, false);
+            await _serviceManager.CompanyService.DeleteCompanyAsync(id, false);
             return NoContent();
         }
 
         [HttpPut("{id:guid}")]
-        public IActionResult UpdateCompany(Guid id, [FromBody] CompanyForUpdateDto company)
+        public async Task<IActionResult> UpdateCompany(Guid id, [FromBody] CompanyForUpdateDto company)
         {
             if(company == null)
             {
@@ -100,7 +100,7 @@ namespace CompanyEmployees.Presentation.Controllers
                 return UnprocessableEntity(ModelState);
             }
 
-            _serviceManager.CompanyService.UpdateCompany(id, company, true);
+            await _serviceManager.CompanyService.UpdateCompanyAsync(id, company, true);
             return NoContent();
         }
 
