@@ -57,7 +57,7 @@ namespace Service
             return (companies: companiesDto, ids: ids);
         }
 
-        public async Task DeleteCompany(Guid companyId,bool trackChanges)
+        public async Task DeleteCompanyAsync(Guid companyId,bool trackChanges)
         {
             var company = await _repository.Company.GetCompanyAsync(companyId, false);
 
@@ -69,11 +69,6 @@ namespace Service
             _repository.Company.DeleteCompany(company);
             await _repository.SaveAsync();
 
-        }
-
-        public Task DeleteCompanyAsync(Guid companyId, bool trachChanges)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<CompanyDto>> GetAllCompaniesAsync(bool trackChanges)
