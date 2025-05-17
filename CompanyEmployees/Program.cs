@@ -1,5 +1,6 @@
 using CompanyEmployees.Extensions;
 using CompanyEmployees.Extenstions;
+using CompanyEmployees.Presentation.ActionFilters;
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -29,6 +30,7 @@ namespace CompanyEmployees
             builder.Services.ConfigureLoggerService();
             builder.Services.ConfigureRepositoryManager();
             builder.Services.ConfigureServiceManager();
+            builder.Services.AddScoped<ValidationFilterAttribute>();
             builder.Services.ConfigureSqlContext(builder.Configuration);
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {

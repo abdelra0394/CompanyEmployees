@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CompanyEmployees.Presentation.ActionFilters;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Service.Contracts;
@@ -31,17 +32,9 @@ namespace CompanyEmployees.Presentation.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateEmployee(Guid companyId,EmployeeForCreationDto employee)
         {
-            if(employee == null)
-            {
-                return BadRequest("EmployeeForCreationDto object is null");
-            }
-            if (!ModelState.IsValid)
-            {
-                return UnprocessableEntity(ModelState);
-            }
-
             var employeeEntity = await _serviceManager.EmployeeService
                 .CreateEmployeeAsync(companyId, employee,false);
 
@@ -56,16 +49,9 @@ namespace CompanyEmployees.Presentation.Controllers
         }
 
         [HttpPut("{id:guid}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> UpdateEmployee(Guid companyId,Guid id, [FromBody] EmployeeForUpdateDto employee)
         {
-            if(employee == null)
-            {
-                return BadRequest("Employee dto object is null");
-            }
-            if (!ModelState.IsValid)
-            {
-                return UnprocessableEntity(ModelState);
-            }
             await _serviceManager
                 .EmployeeService
                 .UpdateEmployeeAsync(companyId, id, employee,
